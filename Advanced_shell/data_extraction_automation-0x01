@@ -1,0 +1,90 @@
+#!/bin/bash
+# Data Extraction Automation Script - Task 1
+# This script extracts Pokemon data from the JSON file created in Task 0
+# Uses jq, awk, and sed for text manipulation
+
+# Input file from Task 0
+DATA_FILE="data.json"
+
+# Function to check if required tools are available
+check_prerequisites() {
+    local missing_tools=()
+    
+    if ! command -v jq &> /dev/null; then
+        missing_tools+=("jq")
+    fi
+    
+    if ! command -v awk &> /dev/null; then
+        missing_tools+=("awk")
+    fi
+    
+    if ! command -v sed &> /dev/null; then
+        missing_tools+=("sed")
+    fi
+    
+    if [ ${#missing_tools[@]} -gt 0 ]; then
+        echo "❌ Error: Missing required tools: ${missing_tools[*]}"
+        echo "Please install them with: sudo apt install ${missing_tools[*]}"
+        exit 1
+    fi
+}
+
+# Function to check if data file exists
+check_data_file() {
+    if [ ! -f "$DATA_FILE" ]; then
+        echo "❌ Error: $DATA_FILE not found!"
+        echo "Please run the Task 0 script (apiAutomation-0x00.sh) first to create the data file."
+        exit 1
+    fi
+    
+    # Verify it's valid JSON
+    if ! jq empty "$DATA_FILE" 2>/dev/null; then
+        echo "❌ Error: $DATA_FILE contains invalid JSON!"
+        exit 1
+    fi
+}
+
+# Main function to extract and format Pokemon data
+extract_pokemon_data() {
+    # Extract name using jq
+    local name=$(jq -r '.name' "$DATA_FILE")
+    
+    # Extract height (in decimeters, convert to meters) using jq
+    local height_dm=$(jq -r '.height' "$DATA_FILE")
+    local height_m=$(echo "$height_dm" | awk '{printf "%.1f", $1/10}')
+    
+    # Extract weight (in hectograms, convert to kg) using jq  
+    local weight_hg=$(jq -r '.weight' "$DATA_FILE")
+    local weight_kg=$(echo "$weight_hg" | awk '{printf "%.0f", $1/10}')
+    
+    # Extract types using jq and format them
+    local types=$(jq -r '.types[].type.name' "$DATA_FILE" | awk '
+        {
+            if (NR == 1) {
+                result = $0
+            } else {
+                result = result "/" $0
+            }
+        }
+        END {
+            print result
+        }
+    ')
+    
+    # Capitalize the first letter of name and types using sed
+    name=$(echo "$name" | sed 's/^./\U&/')
+    types=$(echo "$types" | sed 's/^./\U&/; s|/\(.\)|\U/\1|g')
+    
+    # Format and display the final output
+    echo "${name} is of type ${types}, weighs ${weight_kg}kg, and is ${height_m}m tall."
+}
+
+# Main execution
+main() {
+    check_prerequisites
+    check_data_file
+    extract_pokemon_data
+}
+
+# Run the main function
+main "$@"
