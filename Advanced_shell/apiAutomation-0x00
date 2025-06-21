@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# API Request Automation Script
+# Fetches Pikachu data from Pokemon API and saves to data.json
+# Logs errors to errors.txt if request fails
+
+API_URL="https://pokeapi.co/api/v2/pokemon/pikachu"
+DATA_FILE="data.json"
+ERROR_FILE="errors.txt"
+
+# Function to log errors with timestamp
+log_error() {
+    local error_message="$1"
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    echo "[$timestamp] ERROR: $error_message" >> "$ERROR_FILE"
+}
+
+# Make API request and handle response
+echo "Making API request to Pokemon API for Pikachu..."
+
+# Use curl to fetch data and capture HTTP response code
+http_code=$(curl -s -w "%{http_code}" -o "$DATA_FILE" "$API_URL")
+
+# Check if request was successful (HTTP 200)
+if [ "$http_code" -eq 200 ]; then
+    echo "✅ API request successful! Data saved to $DATA_FILE"
+    echo "📄 File size: $(du -h "$DATA_FILE" | cut -f1)"
+    echo ""
+    echo "🎉 Success! You can view the data with: jq . < $DATA_FILE"
+else
+    # Log error and clean up
+    log_error "API request failed with HTTP code: $http_code"
+    echo "❌ API request failed with HTTP code: $http_code"
+    echo "❌ Error logged to $ERROR_FILE"
+    
+    # Remove failed data file if it exists
+    [ -f "$DATA_FILE" ] && rm "$DATA_FILE"
+    exit 1
+fi
