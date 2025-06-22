@@ -1,0 +1,218 @@
+#!/bin/bash
+# Summary Data Script - Task 3
+# This script reads JSON files from Task 2 and generates a CSV report
+# with Pokemon data and calculates averages using awk
+
+# Input directory containing JSON files from Task 2
+INPUT_DIR="pokemon_data"
+
+# Output CSV file
+OUTPUT_CSV="pokemon_report.csv"
+
+# Temporary file for processing
+TEMP_DATA="temp_pokemon_data.txt"
+
+# Function to check prerequisites
+check_prerequisites() {
+    echo "🔍 Checking prerequisites..."
+    
+    # Check if jq is installed
+    if ! command -v jq &> /dev/null; then
+        echo "❌ Error: jq is not installed. Please install jq first."
+        echo "   Install with: sudo apt-get install jq"
+        exit 1
+    fi
+    
+    # Check if awk is available
+    if ! command -v awk &> /dev/null; then
+        echo "❌ Error: awk is not installed."
+        exit 1
+    fi
+    
+    echo "✅ Prerequisites check completed"
+}
+
+# Function to check if input directory exists and has JSON files
+check_input_data() {
+    if [ ! -d "$INPUT_DIR" ]; then
+        echo "❌ Error: Input directory '$INPUT_DIR' not found!"
+        echo "   Please run Task 2 script (batchProcessing-0x02) first to generate Pokemon data."
+        exit 1
+    fi
+    
+    # Count JSON files in the directory
+    local json_count=$(find "$INPUT_DIR" -name "*.json" -type f | wc -l)
+    
+    if [ "$json_count" -eq 0 ]; then
+        echo "❌ Error: No JSON files found in '$INPUT_DIR'!"
+        echo "   Please run Task 2 script (batchProcessing-0x02) first to generate Pokemon data."
+        exit 1
+    fi
+    
+    echo "📁 Found $json_count JSON files in $INPUT_DIR"
+}
+
+# Function to extract data from JSON files and create temporary data file
+extract_pokemon_data() {
+    echo "📊 Extracting Pokemon data from JSON files..."
+    
+    # Remove temporary file if it exists
+    [ -f "$TEMP_DATA" ] && rm "$TEMP_DATA"
+    
+    # Process each JSON file in the input directory
+    for json_file in "$INPUT_DIR"/*.json; do
+        if [ -f "$json_file" ]; then
+            # Extract name, height, and weight using jq
+            local name=$(jq -r '.name' "$json_file" 2>/dev/null)
+            local height_dm=$(jq -r '.height' "$json_file" 2>/dev/null)
+            local weight_hg=$(jq -r '.weight' "$json_file" 2>/dev/null)
+            
+            # Check if extraction was successful
+            if [ "$name" != "null" ] && [ "$height_dm" != "null" ] && [ "$weight_hg" != "null" ]; then
+                # Convert units: decimeters to meters, hectograms to kg
+                local height_m=$(echo "$height_dm" | awk '{printf "%.1f", $1/10}')
+                local weight_kg=$(echo "$weight_hg" | awk '{printf "%.1f", $1/10}')
+                
+                # Capitalize first letter of name
+                name=$(echo "$name" | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}')
+                
+                # Write to temporary file
+                echo "$name,$height_m,$weight_kg" >> "$TEMP_DATA"
+                
+                echo "  ✅ Processed: $name"
+            else
+                echo "  ❌ Failed to extract data from $(basename "$json_file")"
+            fi
+        fi
+    done
+    
+    # Check if any data was extracted
+    if [ ! -f "$TEMP_DATA" ] || [ ! -s "$TEMP_DATA" ]; then
+        echo "❌ Error: No valid data could be extracted from JSON files!"
+        exit 1
+    fi
+}
+
+# Function to generate CSV report
+generate_csv_report() {
+    echo "📝 Generating CSV report..."
+    
+    # Create CSV header
+    echo "Name,Height (m),Weight (kg)" > "$OUTPUT_CSV"
+    
+    # Sort the data by name and append to CSV
+    sort "$TEMP_DATA" >> "$OUTPUT_CSV"
+    
+    echo "✅ CSV report generated: $OUTPUT_CSV"
+}
+
+# Function to calculate and display averages using awk
+calculate_averages() {
+    echo "🧮 Calculating averages..."
+    
+    # Use awk to calculate averages from the temporary data file
+    awk -F',' '
+    BEGIN {
+        height_sum = 0
+        weight_sum = 0
+        count = 0
+    }
+    {
+        height_sum += $2
+        weight_sum += $3
+        count++
+    }
+    END {
+        if (count > 0) {
+            avg_height = height_sum / count
+            avg_weight = weight_sum / count
+            printf "Average Height: %.2f m\n", avg_height
+            printf "Average Weight: %.2f kg\n", avg_weight
+        } else {
+            print "No data to calculate averages"
+        }
+    }' "$TEMP_DATA"
+}
+
+# Function to display the CSV content
+display_csv_content() {
+    echo ""
+    echo "📋 CSV Report Content:"
+    echo "====================="
+    
+    # Display the CSV content with proper formatting
+    while IFS=, read -r name height weight; do
+        printf "%-12s %s %s\n" "$name" "$height" "$weight"
+    done < "$OUTPUT_CSV"
+}
+
+# Function to display script information
+show_info() {
+    echo "📊 Pokemon Data Summary Report Generator"
+    echo "======================================="
+    echo "This script processes JSON files from Task 2 and generates a CSV report"
+    echo ""
+    echo "Input directory: $INPUT_DIR"
+    echo "Output CSV file: $OUTPUT_CSV"
+    echo ""
+}
+
+# Function to cleanup temporary files
+cleanup() {
+    if [ -f "$TEMP_DATA" ]; then
+        rm "$TEMP_DATA"
+    fi
+}
+
+# Function to display final summary
+show_final_summary() {
+    local pokemon_count=$(tail -n +2 "$OUTPUT_CSV" | wc -l)
+    
+    echo ""
+    echo "🎉 Summary Report Complete!"
+    echo "=========================="
+    echo "📄 CSV file: $OUTPUT_CSV"
+    echo "🔢 Pokemon processed: $pokemon_count"
+    echo ""
+    echo "💡 You can view the full report with:"
+    echo "   cat $OUTPUT_CSV"
+    echo "   or open it in a spreadsheet application"
+}
+
+# Main execution function
+main() {
+    show_info
+    check_prerequisites
+    check_input_data
+    
+    echo "🚀 Starting Pokemon data summarization..."
+    echo ""
+    
+    # Extract data from JSON files
+    extract_pokemon_data
+    
+    # Generate CSV report
+    generate_csv_report
+    
+    # Display the report header message
+    echo ""
+    echo "CSV Report generated at: $OUTPUT_CSV"
+    echo ""
+    
+    # Display CSV content
+    display_csv_content
+    
+    echo ""
+    
+    # Calculate and display averages
+    calculate_averages
+    
+    # Show final summary
+    show_final_summary
+    
+    # Cleanup temporary files
+    cleanup
+}
+
+# Run the main function
+main "$@"

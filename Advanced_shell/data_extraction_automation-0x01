@@ -51,14 +51,14 @@ extract_pokemon_data() {
     
     # Extract height (in decimeters, convert to meters) using jq
     local height_dm=$(jq -r '.height' "$DATA_FILE")
-    local height_m=$(echo "$height_dm" | awk '{printf "%.1f", $1/10}')
+    local formatted_height=$(echo "$height_dm" | awk '{printf "%.1f", $1/10}')
     
     # Extract weight (in hectograms, convert to kg) using jq  
     local weight_hg=$(jq -r '.weight' "$DATA_FILE")
-    local weight_kg=$(echo "$weight_hg" | awk '{printf "%.0f", $1/10}')
+    local formatted_weight=$(echo "$weight_hg" | awk '{printf "%.0f", $1/10}')
     
     # Extract types using jq and format them
-    local types=$(jq -r '.types[].type.name' "$DATA_FILE" | awk '
+    local type=$(jq -r '.types[].type.name' "$DATA_FILE" | awk '
         {
             if (NR == 1) {
                 result = $0
@@ -73,10 +73,10 @@ extract_pokemon_data() {
     
     # Capitalize the first letter of name and types using sed
     name=$(echo "$name" | sed 's/^./\U&/')
-    types=$(echo "$types" | sed 's/^./\U&/; s|/\(.\)|\U/\1|g')
+    type=$(echo "$type" | sed 's/^./\U&/; s|/\(.\)|\U/\1|g')
     
     # Format and display the final output
-    echo "${name} is of type ${types}, weighs ${weight_kg}kg, and is ${height_m}m tall."
+    echo "$name is of type $type, weighs ${formatted_weight}kg, and is ${formatted_height}m tall."
 }
 
 # Main execution

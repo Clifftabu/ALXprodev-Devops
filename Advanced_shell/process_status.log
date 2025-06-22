@@ -1,0 +1,33 @@
+[2025-06-22 11:50:24] Script started with PID 1524
+[2025-06-22 11:50:24] Created directories: pokemon_data, /tmp/pokemon_parallel_1524
+[2025-06-22 11:50:24] Started background process for bulbasaur (PID: 1529)
+[2025-06-22 11:50:24] Starting fetch for bulbasaur (PID: 1524)
+[2025-06-22 11:50:24] Attempt 1 for bulbasaur
+[2025-06-22 11:50:24] Started background process for ivysaur (PID: 1536)
+[2025-06-22 11:50:24] Starting fetch for ivysaur (PID: 1524)
+[2025-06-22 11:50:24] Attempt 1 for ivysaur
+[2025-06-22 11:50:24] Started background process for venusaur (PID: 1543)
+[2025-06-22 11:50:24] Starting fetch for venusaur (PID: 1524)
+[2025-06-22 11:50:24] Attempt 1 for venusaur
+[2025-06-22 11:50:25] Started background process for charmander (PID: 1550)
+[2025-06-22 11:50:25] Starting fetch for charmander (PID: 1524)
+[2025-06-22 11:50:25] Attempt 1 for charmander
+[2025-06-22 11:50:25] Started background process for charmeleon (PID: 1557)
+[2025-06-22 11:50:25] Starting fetch for charmeleon (PID: 1524)
+[2025-06-22 11:50:25] Attempt 1 for charmeleon
+[2025-06-22 11:50:25] Waiting for 5 background processes to complete...
+[2025-06-22 11:50:25] Completed fetch for ivysaur (PID: 1524)
+[2025-06-22 11:50:25] Completed fetch for bulbasaur (PID: 1524)
+[2025-06-22 11:50:25] Process 1529 completed successfully
+[2025-06-22 11:50:25] Process 1536 completed successfully
+[2025-06-22 11:50:25] Completed fetch for charmander (PID: 1524)
+[2025-06-22 11:50:25] Completed fetch for charmeleon (PID: 1524)
+[2025-06-22 11:50:25] Completed fetch for venusaur (PID: 1524)
+[2025-06-22 11:50:25] Process 1543 completed successfully
+[2025-06-22 11:50:25] Process 1550 completed successfully
+[2025-06-22 11:50:25] Process 1557 completed successfully
+[2025-06-22 11:50:25] Process completion summary: 5 successful, 0 failed
+[2025-06-22 11:50:25] Script completed with exit code 0
+[2025-06-22 11:50:25] Cleanup initiated
+[2025-06-22 11:50:25] Cleaned up temporary directory: /tmp/pokemon_parallel_1524
+[2025-06-22 11:50:25] Cleanup completed
