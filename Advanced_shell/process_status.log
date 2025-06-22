@@ -1,33 +1,37 @@
-[2025-06-22 11:50:24] Script started with PID 1524
-[2025-06-22 11:50:24] Created directories: pokemon_data, /tmp/pokemon_parallel_1524
-[2025-06-22 11:50:24] Started background process for bulbasaur (PID: 1529)
-[2025-06-22 11:50:24] Starting fetch for bulbasaur (PID: 1524)
-[2025-06-22 11:50:24] Attempt 1 for bulbasaur
-[2025-06-22 11:50:24] Started background process for ivysaur (PID: 1536)
-[2025-06-22 11:50:24] Starting fetch for ivysaur (PID: 1524)
-[2025-06-22 11:50:24] Attempt 1 for ivysaur
-[2025-06-22 11:50:24] Started background process for venusaur (PID: 1543)
-[2025-06-22 11:50:24] Starting fetch for venusaur (PID: 1524)
-[2025-06-22 11:50:24] Attempt 1 for venusaur
-[2025-06-22 11:50:25] Started background process for charmander (PID: 1550)
-[2025-06-22 11:50:25] Starting fetch for charmander (PID: 1524)
-[2025-06-22 11:50:25] Attempt 1 for charmander
-[2025-06-22 11:50:25] Started background process for charmeleon (PID: 1557)
-[2025-06-22 11:50:25] Starting fetch for charmeleon (PID: 1524)
-[2025-06-22 11:50:25] Attempt 1 for charmeleon
-[2025-06-22 11:50:25] Waiting for 5 background processes to complete...
-[2025-06-22 11:50:25] Completed fetch for ivysaur (PID: 1524)
-[2025-06-22 11:50:25] Completed fetch for bulbasaur (PID: 1524)
-[2025-06-22 11:50:25] Process 1529 completed successfully
-[2025-06-22 11:50:25] Process 1536 completed successfully
-[2025-06-22 11:50:25] Completed fetch for charmander (PID: 1524)
-[2025-06-22 11:50:25] Completed fetch for charmeleon (PID: 1524)
-[2025-06-22 11:50:25] Completed fetch for venusaur (PID: 1524)
-[2025-06-22 11:50:25] Process 1543 completed successfully
-[2025-06-22 11:50:25] Process 1550 completed successfully
-[2025-06-22 11:50:25] Process 1557 completed successfully
-[2025-06-22 11:50:25] Process completion summary: 5 successful, 0 failed
-[2025-06-22 11:50:25] Script completed with exit code 0
-[2025-06-22 11:50:25] Cleanup initiated
-[2025-06-22 11:50:25] Cleaned up temporary directory: /tmp/pokemon_parallel_1524
-[2025-06-22 11:50:25] Cleanup completed
+[2025-06-22 11:55:38] Script started with PID 1622
+[2025-06-22 11:55:38] Created directories: pokemon_data, /tmp/pokemon_parallel_1622
+[2025-06-22 11:55:38] Started background process for bulbasaur (PID: 1627)
+[2025-06-22 11:55:38] Starting fetch for bulbasaur (PID: 1622)
+[2025-06-22 11:55:38] Attempt 1 for bulbasaur
+[2025-06-22 11:55:38] Started background process for ivysaur (PID: 1634)
+[2025-06-22 11:55:38] Starting fetch for ivysaur (PID: 1622)
+[2025-06-22 11:55:38] Attempt 1 for ivysaur
+[2025-06-22 11:55:38] Starting fetch for venusaur (PID: 1622)
+[2025-06-22 11:55:38] Started background process for venusaur (PID: 1641)
+[2025-06-22 11:55:38] Attempt 1 for venusaur
+[2025-06-22 11:55:38] Started background process for charmander (PID: 1648)
+[2025-06-22 11:55:38] Starting fetch for charmander (PID: 1622)
+[2025-06-22 11:55:38] Attempt 1 for charmander
+[2025-06-22 11:55:39] Starting fetch for charmeleon (PID: 1622)
+[2025-06-22 11:55:39] Started background process for charmeleon (PID: 1656)
+[2025-06-22 11:55:39] Attempt 1 for charmeleon
+[2025-06-22 11:55:39] Completed fetch for bulbasaur (PID: 1622)
+[2025-06-22 11:55:39] Waiting for 5 background processes to complete...
+[2025-06-22 11:55:39] Active jobs: 5
+[2025-06-22 11:55:39] Completed fetch for venusaur (PID: 1622)
+[2025-06-22 11:55:39] Completed fetch for charmeleon (PID: 1622)
+[2025-06-22 11:55:39] Completed fetch for charmander (PID: 1622)
+[2025-06-22 11:55:40] Completed fetch for ivysaur (PID: 1622)
+[2025-06-22 11:55:40] Active jobs: 1
+[2025-06-22 11:55:41] Process 1627 completed successfully
+[2025-06-22 11:55:41] Process 1634 completed successfully
+[2025-06-22 11:55:41] Process 1641 completed successfully
+[2025-06-22 11:55:41] Process 1648 completed successfully
+[2025-06-22 11:55:41] Process 1656 completed successfully
+[2025-06-22 11:55:41] Process completion summary: 5 successful, 0 failed
+[2025-06-22 11:55:41] All background jobs completed: 1 remaining
+[2025-06-22 11:55:41] Script completed with exit code 0
+[2025-06-22 11:55:41] Cleanup initiated
+[2025-06-22 11:55:41] Waiting for remaining jobs to finish...
+[2025-06-22 11:55:41] Cleaned up temporary directory: /tmp/pokemon_parallel_1622
+[2025-06-22 11:55:41] Cleanup completed. Final job count: 0

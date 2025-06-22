@@ -104,16 +104,36 @@ fetch_pokemon() {
     return 1
 }
 
-# Function to cleanup on script exit
+# Function to cleanup on script exit using jobs
 cleanup() {
     log_process "Cleanup initiated"
     
-    # Kill any remaining background processes
+    # Show current jobs before cleanup
+    if jobs -p | grep -q .; then
+        log_process "Active background jobs found: $(jobs -p | wc -l)"
+        jobs -l
+        
+        # Kill any remaining background processes using jobs
+        for job_pid in $(jobs -p); do
+            if kill -0 "$job_pid" 2>/dev/null; then
+                log_process "Terminating job process $job_pid"
+                kill "$job_pid" 2>/dev/null
+            fi
+        done
+    fi
+    
+    # Also kill PIDs from our tracking array
     for pid in "${PIDS[@]}"; do
         if kill -0 "$pid" 2>/dev/null; then
-            log_process "Terminating process $pid"
+            log_process "Terminating tracked process $pid"
             kill "$pid" 2>/dev/null
         fi
+    done
+    
+    # Wait for jobs to complete
+    log_process "Waiting for remaining jobs to finish..."
+    while jobs -r | grep -q .; do
+        sleep 0.5
     done
     
     # Clean up temporary directory
@@ -122,16 +142,24 @@ cleanup() {
         log_process "Cleaned up temporary directory: $TEMP_DIR"
     fi
     
-    log_process "Cleanup completed"
+    log_process "Cleanup completed. Final job count: $(jobs | wc -l)"
 }
 
-# Function to wait for all background processes
+# Function to wait for all background processes using jobs
 wait_for_processes() {
     local failed_count=0
     local success_count=0
     
     log_process "Waiting for ${#PIDS[@]} background processes to complete..."
     
+    # Use jobs command to monitor background processes
+    while jobs -r | grep -q .; do
+        log_process "Active jobs: $(jobs -r | wc -l)"
+        jobs -l  # List jobs with PIDs
+        sleep 1
+    done
+    
+    # Wait for individual PIDs and check exit status
     for pid in "${PIDS[@]}"; do
         if wait "$pid"; then
             ((success_count++))
@@ -143,6 +171,7 @@ wait_for_processes() {
     done
     
     log_process "Process completion summary: $success_count successful, $failed_count failed"
+    log_process "All background jobs completed: $(jobs | wc -l) remaining"
     
     return $failed_count
 }
@@ -221,14 +250,27 @@ main() {
     
     echo "All background processes started. PIDs: ${PIDS[*]}"
     
+    # Display current jobs status
+    echo "Current background jobs:"
+    jobs -l
+    
+    # Show jobs running status
+    echo "Number of running jobs: $(jobs -r | wc -l)"
+    
     # Show progress in background
     show_progress &
     progress_pid=$!
     
     # Wait for all processes to complete
     echo "Waiting for all processes to complete..."
+    echo "Monitoring jobs status..."
     wait_for_processes
     exit_code=$?
+    
+    # Final jobs check
+    echo "Final jobs status after completion:"
+    jobs -l
+    echo "Remaining jobs count: $(jobs | wc -l)"
     
     # Stop progress display
     kill "$progress_pid" 2>/dev/null
